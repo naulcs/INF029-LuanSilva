@@ -10,6 +10,15 @@ typedef struct DQ
 
 } DataQuebrada;
 
+typedef struct Qtd
+{
+    int qtdDias;
+    int qtdMeses;
+    int qtdAnos;
+    int retorno;
+
+} DiasMesesAnos;
+
 DataQuebrada quebraData(char data[]){
   DataQuebrada dq;
   char sDia[3];
@@ -73,8 +82,6 @@ int q1(char data[])
 DataQuebrada dq = quebraData (data);
 
 
-        printf("%d \n%d \n%d \n", dq.iDia, dq.iMes, dq.iAno);
-
  int diasMes[] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 
         if (dq.iAno <= 0 || dq.iAno > 2025 || dq.iMes < 1 || dq.iMes > 12)
@@ -90,25 +97,111 @@ DataQuebrada dq = quebraData (data);
         if (dq.iDia < 1 || dq.iDia > diasMes[dq.iMes])
             datavalida = 0;
 
-    printf("%d\n", datavalida);
-
     if (datavalida)
         return 1;
     else
         return 0;
 }
 
-int main()
-{
-    char data[11];
+DiasMesesAnos q2(char datainicial[], char datafinal[]) {
+    DiasMesesAnos dma;
 
-    // quebrar a string data em strings sDia, sMes, sAno
-    printf("Digite a data (DD/MM/AAAA): ");
-    fgets(data, sizeof(data), stdin);
+    if (q1(datainicial) == 0) {
+        dma.retorno = 2;
+        return dma;
+    } else if (q1(datafinal) == 0) {
+        dma.retorno = 3;
+        return dma;
+    } else {
+        DataQuebrada inicio = quebraData(datainicial);
+        DataQuebrada fim = quebraData(datafinal);
 
-    q1(data);
+        // Verifica se a data final é anterior à inicial
+        if (
+            fim.iAno < inicio.iAno ||
+            (fim.iAno == inicio.iAno && fim.iMes < inicio.iMes) ||
+            (fim.iAno == inicio.iAno && fim.iMes == inicio.iMes && fim.iDia < inicio.iDia)
+        ) {
+            dma.retorno = 3;
+            return dma;
+        }
+
+        // Calcular diferença
+        int anos = fim.iAno - inicio.iAno;
+        int meses = fim.iMes - inicio.iMes;
+        int dias = fim.iDia - inicio.iDia;
+
+        if (dias < 0) {
+            // Descobrir quantos dias teve o mês anterior a fim.iMes
+            int mesAnterior = fim.iMes - 1;
+            int anoAux = fim.iAno;
+
+            if (mesAnterior == 0) {
+                mesAnterior = 12;
+                anoAux--;
+            }
+
+            int diasMesAnterior;
+            if (mesAnterior == 2) {
+                if ((anoAux % 4 == 0 && anoAux % 100 != 0) || (anoAux % 400 == 0)) {
+                    diasMesAnterior = 29;
+                } else {
+                    diasMesAnterior = 28;
+                }
+            } else if (mesAnterior == 4 || mesAnterior == 6 || mesAnterior == 9 || mesAnterior == 11) {
+                diasMesAnterior = 30;
+            } else {
+                diasMesAnterior = 31;
+            }
+
+            dias += diasMesAnterior;
+            meses--;
+        }
+
+        if (meses < 0) {
+            meses += 12;
+            anos--;
+        }
+
+        dma.qtdAnos = anos;
+        dma.qtdMeses = meses;
+        dma.qtdDias = dias;
+        dma.retorno = 1;
+
+        return dma;
+    }
 }
 
+int main()
+{
+    char data1[11], data2[11];
+
+    printf("Digite a data inicial: ");
+    fgets(data1, sizeof(data1), stdin);
+    data1[strcspn(data1, "\n")] = '\0';  // REMOVE \n
+
+    printf("Digite a data final: ");
+    fgets(data2, sizeof(data2), stdin);
+    data2[strcspn(data2, "\n")] = '\0';  // REMOVE \n
+
+    DiasMesesAnos resultado = q2(data1, data2);
+
+    if (resultado.retorno == 1)
+    {
+        printf("Diferença: %d anos, %d meses, %d dias.\n",
+               resultado.qtdAnos, resultado.qtdMeses, resultado.qtdDias);
+    }
+    else if (resultado.retorno == 2)
+    {
+        printf("Data inicial inválida.\n");
+    }
+    else if (resultado.retorno == 3)
+    {
+        printf("Data final inválida ou anterior à data inicial.\n");
+    }
+
+    return 0;
+}
 
 
 	
