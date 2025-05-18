@@ -31,8 +31,8 @@ void testQ6();
 
 int main()
 {
-    //testSomar();
-    //testFatorial();
+    /*testSomar();
+    testFatorial();*/
     testQ1();
     //testQ2();
     /*testQ3();
