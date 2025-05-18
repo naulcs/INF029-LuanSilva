@@ -172,33 +172,48 @@ DiasMesesAnos q2(char datainicial[], char datafinal[]) {
     }
 }
 
+int q3(char *texto, char c, int isCaseSensitive)
+{
+  int qtdOcorrencias = -1;
+  if (!isCaseSensitive && c >= 'A' && c <= 'Z')
+  {
+    c = c + 32;
+  }
+
+  for (int i = 0; texto[i] != '\0'; i++)
+  {
+   char atual = texto[i];
+   if (!isCaseSensitive && atual >= 'A' && atual <= 'Z') {
+            atual = atual + 32;
+        }
+        if (atual == c)
+        {
+            qtdOcorrencias++;
+        }
+        
+  }
+  
+  
+  return qtdOcorrencias;
+}
+
 int main()
 {
-    char data1[11], data2[11];
+    char texto[251];
+    char letra;
+    int caseFlag;
 
-    printf("Digite a data inicial: ");
-    fgets(data1, sizeof(data1), stdin);
-    data1[strcspn(data1, "\n")] = '\0';  // REMOVE \n
+    printf("Digite o texto (até 250 caracteres): ");
+    fgets(texto, sizeof(texto), stdin);
 
-    printf("Digite a data final: ");
-    fgets(data2, sizeof(data2), stdin);
-    data2[strcspn(data2, "\n")] = '\0';  // REMOVE \n
+    printf("Digite o caractere a ser pesquisado: ");
+    scanf(" %c", &letra);
 
-    DiasMesesAnos resultado = q2(data1, data2);
+    printf("Case sensitive? (1 = sim, 0 = não): ");
+    scanf("%d", &caseFlag);
 
-    if (resultado.retorno == 1)
-    {
-        printf("Diferença: %d anos, %d meses, %d dias.\n",
-               resultado.qtdAnos, resultado.qtdMeses, resultado.qtdDias);
-    }
-    else if (resultado.retorno == 2)
-    {
-        printf("Data inicial inválida.\n");
-    }
-    else if (resultado.retorno == 3)
-    {
-        printf("Data final inválida ou anterior à data inicial.\n");
-    }
+    int resultado = q3(texto, letra, caseFlag);
+    printf("Ocorrências: %d\n", resultado);
 
     return 0;
 }
