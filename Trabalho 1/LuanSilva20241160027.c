@@ -132,32 +132,70 @@ int q1(char data[])
     4 -> datainicial > datafinal
     Caso o cálculo esteja correto, os atributos qtdDias, qtdMeses e qtdAnos devem ser preenchidos com os valores correspondentes.
  */
-DiasMesesAnos q2(char datainicial[], char datafinal[])
-{
+DiasMesesAnos q2(char datainicial[], char datafinal[]) {
+    DiasMesesAnos dma;
 
-  // calcule os dados e armazene nas três variáveis a seguir
-  DiasMesesAnos dma;
+    if (q1(datainicial) == 0) {
+        dma.retorno = 2;
+        return dma;
+    } else if (q1(datafinal) == 0) {
+        dma.retorno = 3;
+        return dma;
+    } else {
+        DataQuebrada inicio = quebraData(datainicial);
+        DataQuebrada fim = quebraData(datafinal);
 
-  if (q1(datainicial) == 0)
-  {
-    dma.retorno = 2;
-    return dma;
-  }
-  else if (q1(datafinal) == 0)
-  {
-    dma.retorno = 3;
-    return dma;
-  }
-  else
-  {
-    // verifique se a data final não é menor que a data inicial
+        if (
+            fim.iAno < inicio.iAno ||
+            (fim.iAno == inicio.iAno && fim.iMes < inicio.iMes) ||
+            (fim.iAno == inicio.iAno && fim.iMes == inicio.iMes && fim.iDia < inicio.iDia)
+        ) {
+            dma.retorno = 3;
+            return dma;
+        }
 
-    // calcule a distancia entre as datas
+        int anos = fim.iAno - inicio.iAno;
+        int meses = fim.iMes - inicio.iMes;
+        int dias = fim.iDia - inicio.iDia;
 
-    // se tudo der certo
-    dma.retorno = 1;
-    return dma;
-  }
+        if (dias < 0) {
+            int mesAnterior = fim.iMes - 1;
+            int anoAux = fim.iAno;
+
+            if (mesAnterior == 0) {
+                mesAnterior = 12;
+                anoAux--;
+            }
+
+            int diasMesAnterior;
+            if (mesAnterior == 2) {
+                if ((anoAux % 4 == 0 && anoAux % 100 != 0) || (anoAux % 400 == 0)) {
+                    diasMesAnterior = 29;
+                } else {
+                    diasMesAnterior = 28;
+                }
+            } else if (mesAnterior == 4 || mesAnterior == 6 || mesAnterior == 9 || mesAnterior == 11) {
+                diasMesAnterior = 30;
+            } else {
+                diasMesAnterior = 31;
+            }
+
+            dias += diasMesAnterior;
+            meses--;
+        }
+
+        if (meses < 0) {
+            meses += 12;
+            anos--;
+        }
+
+        dma.qtdAnos = anos;
+        dma.qtdMeses = meses;
+        dma.qtdDias = dias;
+        dma.retorno = 1;
+
+        return dma;
+    }
 }
 
 /*
