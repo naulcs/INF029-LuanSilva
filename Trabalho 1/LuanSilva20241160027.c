@@ -18,6 +18,7 @@
 
 //  Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021 - 19/08/2016
+//gcc corretor.c LuanSilva20241160027.c -o programa
 
 // #################################################
 
@@ -244,6 +245,7 @@ int q3(char *texto, char c, int isCaseSensitive)
             qtdOcorrencias++;
         }
 }
+return qtdOcorrencias;
 }
 /*
  Q4 = encontrar palavra em texto
@@ -262,35 +264,58 @@ int q3(char *texto, char c, int isCaseSensitive)
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
-  int qtdOcorrencias = 0;
-int tamTexto = strlen(strTexto);
-int tamBusca = strlen(strBusca);
+    int qtdOcorrencias = 0;
+    int indicePos = 0;
+    int i = 0; 
+    int posLetra = 1; 
 
-for (int i = 0; i < tamTexto - tamBusca; i++)
-{
-  int encontrou = 1; 
+    int tamBusca = strlen(strBusca);
 
-for (int j = 0; j < tamBusca; j++)
-{
-    if (strTexto[i + j] != strBusca[j])
+    while (strTexto[i] != '\0')
     {
-        encontrou = 0;
-        break;
-    }
-}
+        int tamChar;
 
-if (encontrou)
+        unsigned char c = (unsigned char)strTexto[i];
+        if ((c & 0x80) == 0x00) tamChar = 1;           
+        else if ((c & 0xE0) == 0xC0) tamChar = 2;      
+        else if ((c & 0xF0) == 0xE0) tamChar = 3;      
+        else if ((c & 0xF8) == 0xF0) tamChar = 4;     
+        else tamChar = 1; 
+
+        if (strncmp(&strTexto[i], strBusca, tamBusca) == 0)
         {
-            posicoes[qtdOcorrencias * 2] = i + 1;
-            posicoes[qtdOcorrencias * 2 + 1] = i + tamBusca;
+            int j = 0;
+            int letrasBusca = 0;
+            while (j < tamBusca)
+            {
+                unsigned char cb = (unsigned char)strBusca[j];
+                int tamB;
+                if ((cb & 0x80) == 0x00) tamB = 1;
+                else if ((cb & 0xE0) == 0xC0) tamB = 2;
+                else if ((cb & 0xF0) == 0xE0) tamB = 3;
+                else if ((cb & 0xF8) == 0xF0) tamB = 4;
+                else tamB = 1;
+
+                j += tamB;
+                letrasBusca++;
+            }
+
+            posicoes[indicePos++] = posLetra;
+            posicoes[indicePos++] = posLetra + letrasBusca - 1;
             qtdOcorrencias++;
-            i = i + tamBusca - 1;
+
+            i += tamBusca;
+            posLetra += letrasBusca;
+            continue;
         }
+
+        i += tamChar;
+        posLetra++;
+    }
+
+    return qtdOcorrencias;
 }
 
-
-  return qtdOcorrencias;
-}
 
 /*
  Q5 = inverte número
@@ -304,8 +329,15 @@ if (encontrou)
 
 int q5(int num)
 {
-
-  return num;
+int invertido = 0;
+    
+    while(num != 0) {
+        int digito = num % 10;          
+        invertido = invertido * 10 + digito; 
+        num = num / 10;               
+    }
+    
+    return invertido;
 }
 
 /*
