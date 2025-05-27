@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "LuanSilva20241160027.h" // Substitua pelo seu arquivo de header renomeado
 #include <stdlib.h>
-
+#include <string.h>
 DataQuebrada quebraData(char data[]);
 
 /*
@@ -157,7 +157,7 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
         (fim.iAno == inicio.iAno && fim.iMes < inicio.iMes) ||
         (fim.iAno == inicio.iAno && fim.iMes == inicio.iMes && fim.iDia < inicio.iDia))
     {
-      dma.retorno = 3;
+      dma.retorno = 4;
       return dma;
     }
 
@@ -352,7 +352,36 @@ int invertido = 0;
 
 int q6(int numerobase, int numerobusca)
 {
-  int qtdOcorrencias;
+
+  char strBase[50], strBusca[50];
+  sprintf(strBase,"%d", numerobase);
+  sprintf(strBusca, "%d", numerobusca);
+
+  int tamBase = strlen(strBase);
+  int tamBusca = strlen(strBusca);
+
+  int qtdOcorrencias=0;
+
+  for (int i = 0; i <= tamBase - tamBusca; i++)
+  {
+    int encontrou = 1;
+
+    for (int j = 0; j < tamBusca; j++)
+    {
+      if (strBase[i +j] != strBusca[j])
+      {
+        encontrou = 0;
+        break;
+      }
+      
+    }
+    if (encontrou)
+    {
+      qtdOcorrencias++;
+    }    
+  }
+  
+
   return qtdOcorrencias;
 }
 
