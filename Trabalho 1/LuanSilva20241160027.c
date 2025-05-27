@@ -385,6 +385,11 @@ int q6(int numerobase, int numerobusca)
   return qtdOcorrencias;
 }
 
+
+
+
+
+
 DataQuebrada quebraData(char data[])
 {
   DataQuebrada dq;
