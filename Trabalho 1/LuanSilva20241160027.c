@@ -387,7 +387,40 @@ int q6(int numerobase, int numerobusca)
 
 
 
+int q7(char matriz[8][10], char palavra[])
+{
+    int linhas = 8;
+    int colunas = 10;
+    int len = strlen(palavra);
 
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            int horizotal[] = {-1,-1,-1, 0, 0, 1, 1, 1};
+            int vertical[]  = {-1, 0, 1,-1, 1,-1, 0, 1};
+
+            for (int d = 0; d < 8; d++) {
+                int x = i, y = j, k;
+
+                for (k = 0; k < len; k++) {
+                    int nx = x + k * horizotal[d];
+                    int ny = y + k * vertical[d];
+
+                    if (nx < 0 || ny < 0 || nx >= linhas || ny >= colunas)
+                        break;
+
+                    if (matriz[nx][ny] != palavra[k])
+                        break;
+                }
+
+                if (k == len) {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
 
 
 DataQuebrada quebraData(char data[])
