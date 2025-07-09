@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #define TAM 10
 
-#include "EstruturaVetores.h"
+#include "LuanSilva20241160027.h"
 
-int vetorPrincipal[TAM];
+int* vetorPrincipal[TAM];
+int qtdElementos[TAM];
+int tamEstrutura[TAM];
 
 /*
 Objetivo: criar estrutura auxiliar na posição 'posicao'.
@@ -19,20 +21,30 @@ Rertono (int)
 */
 int criarEstruturaAuxiliar(int posicao, int tamanho)
 {
+    if (posicao < 1 || posicao > 10) {
+        return POSICAO_INVALIDA;
+    }
 
-    int retorno = 0;
-    // a posicao pode já existir estrutura auxiliar
-    retorno = JA_TEM_ESTRUTURA_AUXILIAR;
-    // se posição é um valor válido {entre 1 e 10}
-    retorno = POSICAO_INVALIDA;
-    // o tamanho ser muito grande
-    retorno = SEM_ESPACO_DE_MEMORIA;
-    // o tamanho nao pode ser menor que 1
-    retorno = TAMANHO_INVALIDO;
-    // deu tudo certo, crie
-    retorno = SUCESSO;
+    if (tamanho < 1) {
+        return TAMANHO_INVALIDO;
+    }
+    
+    int indice = posicao - 1;
 
-    return retorno;
+    if (vetorPrincipal[indice] != NULL) {
+        return JA_TEM_ESTRUTURA_AUXILIAR;
+    }
+
+    vetorPrincipal[indice] = (int*) malloc(tamanho * sizeof(int));
+
+    if (vetorPrincipal[indice] == NULL) {
+        return SEM_ESPACO_DE_MEMORIA;
+    }
+
+    tamEstrutura[indice] = tamanho;
+    qtdElementos[indice] = 0;
+
+    return SUCESSO;
 }
 
 /*
@@ -46,35 +58,27 @@ CONSTANTES
 */
 int inserirNumeroEmEstrutura(int posicao, int valor)
 {
-    int retorno = 0;
-    int existeEstruturaAuxiliar = 0;
-    int temEspaco = 0;
-    int posicao_invalida = 0;
-
-    if (posicao_invalida)
-        retorno = POSICAO_INVALIDA;
-    else
+    if (posicao < 1 || posicao > 10)
     {
-        // testar se existe a estrutura auxiliar
-        if (existeEstruturaAuxiliar)
-        {
-            if (temEspaco)
-            {
-                //insere
-                retorno = SUCESSO;
-            }
-            else
-            {
-                retorno = SEM_ESPACO;
-            }
-        }
-        else
-        {
-            retorno = SEM_ESTRUTURA_AUXILIAR;
-        }
+        return POSICAO_INVALIDA;
     }
 
-    return retorno;
+    int indice = posicao - 1;
+
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+    
+    if (qtdElementos[indice] >= tamEstrutura[indice])
+    {
+        return SEM_ESPACO;
+    }
+
+    vetorPrincipal[indice][qtdElementos[indice]] = valor;
+    qtdElementos[indice]++;
+    
+    return SUCESSO;
 }
 
 /*
@@ -265,6 +269,11 @@ Objetivo: inicializa o programa. deve ser chamado ao inicio do programa
 
 void inicializar()
 {
+     for (int i = 0; i < TAM; i++) {
+        vetorPrincipal[i] = NULL;
+        qtdElementos[i] = 0;
+        tamEstrutura[i] = 0;
+    }
 }
 
 /*
@@ -275,4 +284,9 @@ para poder liberar todos os espaços de memória das estruturas auxiliares.
 
 void finalizar()
 {
+      for (int i = 0; i < TAM; i++) {
+        if (vetorPrincipal[i] != NULL) {
+            free(vetorPrincipal[i]);
+        }
+    }
 }
