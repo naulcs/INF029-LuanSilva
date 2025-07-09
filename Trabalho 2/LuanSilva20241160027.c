@@ -94,8 +94,26 @@ Rertono (int)
 */
 int excluirNumeroDoFinaldaEstrutura(int posicao)
 {
-    int retorno = SUCESSO;
-    return retorno;
+    if (posicao < 1 || posicao > 10)
+    {
+        return POSICAO_INVALIDA;
+    }
+
+    int indice = posicao - 1;
+
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    if (qtdElementos[indice] == 0)
+    {
+        return ESTRUTURA_AUXILIAR_VAZIA;
+    }
+    
+    qtdElementos[indice]--;
+
+    return SUCESSO;
 }
 
 /*
@@ -113,22 +131,46 @@ Rertono (int)
 */
 int excluirNumeroEspecificoDeEstrutura(int posicao, int valor)
 {
-    int retorno = SUCESSO;
-    return retorno;
-}
-
-// se posição é um valor válido {entre 1 e 10}
-int ehPosicaoValida(int posicao)
-{
-    int retorno = 0;
     if (posicao < 1 || posicao > 10)
     {
-        retorno = POSICAO_INVALIDA;
+        return POSICAO_INVALIDA;
     }
-    else
-        retorno = SUCESSO;
 
-    return retorno;
+    int indice = posicao - 1;
+
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    if (qtdElementos[indice] == 0)
+    {
+        return ESTRUTURA_AUXILIAR_VAZIA;
+    }
+
+    int posicao_encontrada = -1;
+    for (int i = 0; i < qtdElementos[indice]; i++)
+    {
+        if (vetorPrincipal[indice][i] == valor)
+        {
+            posicao_encontrada = i;
+            break;
+        }
+    }
+
+    if (posicao_encontrada == -1)
+    {
+        return NUMERO_INEXISTENTE;
+    }
+    
+    for (int j = posicao_encontrada; j < qtdElementos[indice] - 1; j++)
+    {
+        vetorPrincipal[indice][j] = vetorPrincipal[indice][j + 1];
+    }
+    
+    qtdElementos[indice]--;
+
+    return SUCESSO;
 }
 /*
 Objetivo: retorna os números da estrutura auxiliar da posição 'posicao (1..10)'.
@@ -141,10 +183,24 @@ Retorno (int)
 */
 int getDadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
+    if (posicao < 1 || posicao > 10)
+    {
+        return POSICAO_INVALIDA;
+    }
 
-    int retorno = 0;
+    int indice = posicao - 1;
 
-    return retorno;
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    for (int i = 0; i < qtdElementos[indice]; i++)
+    {
+        vetorAux[i] = vetorPrincipal[indice][i];
+    }
+    
+    return SUCESSO;
 }
 
 /*
@@ -158,11 +214,38 @@ Rertono (int)
 */
 int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
+    if (posicao < 1 || posicao > 10)
+    {
+        return POSICAO_INVALIDA;
+    }
 
-    int retorno = 0;
+    int indice = posicao - 1;
 
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    for (int i = 0; i < qtdElementos[indice]; i++)
+    {
+        vetorAux[i] = vetorPrincipal[indice][i];
+    }
+
+    int n = qtdElementos[indice];
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (vetorAux[j] > vetorAux[j + 1])
+            {
+                int temp = vetorAux[j];
+                vetorAux[j] = vetorAux[j + 1];
+                vetorAux[j + 1] = temp;
+            }
+        }
+    }
     
-    return retorno;
+    return SUCESSO;
 }
 
 /*
@@ -175,9 +258,28 @@ Rertono (int)
 */
 int getDadosDeTodasEstruturasAuxiliares(int vetorAux[])
 {
+    int contador_geral = 0;
 
-    int retorno = 0;
-    return retorno;
+    for (int i = 0; i < 10; i++)
+    {
+        if (vetorPrincipal[i] != NULL)
+        {
+            for (int j = 0; j < qtdElementos[i]; j++)
+            {
+                vetorAux[contador_geral] = vetorPrincipal[i][j];
+                contador_geral++;
+            }
+        }
+    }
+
+    if (contador_geral == 0)
+    {
+        return TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
+    }
+    else
+    {
+        return SUCESSO;
+    }
 }
 
 /*
@@ -190,9 +292,39 @@ Rertono (int)
 */
 int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[])
 {
+    int contador_geral = 0;
 
-    int retorno = 0;
-    return retorno;
+    for (int i = 0; i < 10; i++)
+    {
+        if (vetorPrincipal[i] != NULL)
+        {
+            for (int j = 0; j < qtdElementos[i]; j++)
+            {
+                vetorAux[contador_geral] = vetorPrincipal[i][j];
+                contador_geral++;
+            }
+        }
+    }
+
+    if (contador_geral == 0)
+    {
+        return TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
+    }
+    
+    for (int i = 0; i < contador_geral - 1; i++)
+    {
+        for (int j = 0; j < contador_geral - i - 1; j++)
+        {
+            if (vetorAux[j] > vetorAux[j + 1])
+            {
+                int temp = vetorAux[j];
+                vetorAux[j] = vetorAux[j + 1];
+                vetorAux[j + 1] = temp;
+            }
+        }
+    }
+    
+    return SUCESSO;
 }
 
 /*
@@ -208,9 +340,41 @@ Rertono (int)
 */
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 {
+    if (posicao < 1 || posicao > 10)
+    {
+        return POSICAO_INVALIDA;
+    }
 
-    int retorno = 0;
-    return retorno;
+    int indice = posicao - 1;
+
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    int tamanho_final = tamEstrutura[indice] + novoTamanho;
+
+    if (tamanho_final < 1)
+    {
+        return NOVO_TAMANHO_INVALIDO;
+    }
+
+    int* novo_ponteiro = (int*) realloc(vetorPrincipal[indice], tamanho_final * sizeof(int));
+
+    if (novo_ponteiro == NULL)
+    {
+        return SEM_ESPACO_DE_MEMORIA;
+    }
+
+    vetorPrincipal[indice] = novo_ponteiro;
+    tamEstrutura[indice] = tamanho_final;
+
+    if (qtdElementos[indice] > tamanho_final)
+    {
+        qtdElementos[indice] = tamanho_final;
+    }
+
+    return SUCESSO;
 }
 
 /*
@@ -224,10 +388,24 @@ Retorno (int)
 */
 int getQuantidadeElementosEstruturaAuxiliar(int posicao)
 {
+    if (posicao < 1 || posicao > 10)
+    {
+        return POSICAO_INVALIDA;
+    }
 
-    int retorno = 0;
+    int indice = posicao - 1;
 
-    return retorno;
+    if (vetorPrincipal[indice] == NULL)
+    {
+        return SEM_ESTRUTURA_AUXILIAR;
+    }
+
+    if (qtdElementos[indice] == 0)
+    {
+        return ESTRUTURA_AUXILIAR_VAZIA;
+    }
+
+    return qtdElementos[indice];
 }
 
 /*
@@ -239,8 +417,44 @@ Retorno (No*)
 */
 No *montarListaEncadeadaComCabecote()
 {
+    No* cabecote = NULL;
+    No* ultimo = NULL;
+    int primeiro_elemento = 1;
 
-    return NULL;
+    for (int i = 0; i < 10; i++)
+    {
+        if (vetorPrincipal[i] != NULL)
+        {
+            for (int j = 0; j < qtdElementos[i]; j++)
+            {
+                if (primeiro_elemento)
+                {
+                    cabecote = (No*) malloc(sizeof(No));
+                    if (cabecote == NULL)
+                    {
+                        return NULL;
+                    }
+                    cabecote->prox = NULL;
+                    ultimo = cabecote;
+                    primeiro_elemento = 0;
+                }
+
+                No* novo_no = (No*) malloc(sizeof(No));
+                if (novo_no == NULL)
+                {
+                    return NULL;
+                }
+                
+                novo_no->conteudo = vetorPrincipal[i][j];
+                novo_no->prox = NULL;
+                
+                ultimo->prox = novo_no;
+                ultimo = novo_no;
+            }
+        }
+    }
+
+    return cabecote;
 }
 
 /*
@@ -249,6 +463,22 @@ Retorno void
 */
 void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[])
 {
+    No* no_atual;
+    int i = 0;
+
+    if (inicio == NULL)
+    {
+        return;
+    }
+
+    no_atual = inicio->prox;
+
+    while (no_atual != NULL)
+    {
+        vetorAux[i] = no_atual->conteudo;
+        no_atual = no_atual->prox;
+        i++;
+    }
 }
 
 /*
@@ -260,6 +490,17 @@ Retorno
 */
 void destruirListaEncadeadaComCabecote(No **inicio)
 {
+    No* no_atual = *inicio;
+    No* proximo_no;
+
+    while (no_atual != NULL)
+    {
+        proximo_no = no_atual->prox;
+        free(no_atual);
+        no_atual = proximo_no;
+    }
+
+    *inicio = NULL;
 }
 
 /*

@@ -19,14 +19,14 @@ int main()
 {
     inicializar();
     testeInserirSemNada();
-    /*testeCriarEstrutura();
+    testeCriarEstrutura();
     testeInserirComEstrutura();
     testeExcluir();
     testeExcluirNumeroEspecifico();
-    testeListar();
-    testeRetornarTodosNumeros();
-    testeMudarTamanhoEstrutura();
-    testeListaEncadeada();*/
+   testeListar();
+   testeRetornarTodosNumeros();
+   testeMudarTamanhoEstrutura();
+   testeListaEncadeada();
     finalizar();
 }
 int ligado = 0;
